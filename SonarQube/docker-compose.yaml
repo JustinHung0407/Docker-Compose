@@ -1,0 +1,78 @@
+# ==========================================
+#  Title:  SonarQube Docker-compose
+#  Author: Justin Hung
+#  Date:   28 Aug 2020
+# 
+# If memery leak occur
+# vim /etc/sysctl.conf 
+# add or modify "vm.max_map_count=655360"
+# sysctl -p
+# ==========================================
+version: "3.5"
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres # postgres:9.6.19
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - sonar-network
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4 # dpage/pgadmin4:4.25
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-test@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
+    volumes:
+      - pgadmin:/root/.pgadmin
+    links:
+      - "postgres:pgsql-server"
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - sonar-network
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:latest # 8.4.1-community
+    container_name: sonarqube
+    restart: "no"
+    ports:
+      - "9000:9000"
+    networks: 
+      - sonar-network
+    depends_on: 
+      - postgres
+    command:
+      - -Dsonar.ce.javaOpts=-Xmx4096m
+      - -Dsonar.web.javaOpts=-Xmx4096m
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar
+      - SONARQUBE_JDBC_USERNAME=admin
+      - SONARQUBE_JDBC_PASSWORD=admin
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+      - sonarqube_logs:/opt/sonarqube/logs
+
+networks:
+  sonar-network:
+    driver: bridge
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_bundled-plugins:
+  sonarqube_logs:
+  postgres:
+  pgadmin:
