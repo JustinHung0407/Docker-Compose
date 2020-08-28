@@ -1,0 +1,48 @@
+# ==========================================
+#  Title:  Prometheus Docker-compose
+#  Author: Justin Hung
+#  Date:   08 January 2020
+# ==========================================
+
+version: '3'
+
+networks:
+  monitor:
+    driver: bridge
+
+services:
+  prometheus:
+    image: 'prom/prometheus:latest'
+    hostname: prometheus
+    restart: always
+    ports:
+      - '9090:9090'
+    networks:
+      - monitor
+    volumes:
+      - './prometheus.yml:/etc/prometheus/prometheus.yml'
+      - './rules.yml:/etc/prometheus/rules.yml'
+
+  alertmanager:
+    image: 'prom/alertmanager:latest'
+    hostname: alertmanager
+    restart: always
+    ports:
+      - '9093:9093'
+    networks:
+      - monitor
+    volumes:
+      - './alertmanager.yml:/etc/alertmanager/alertmanager.yml'
+
+  grafana:
+    image: grafana/grafana
+    hostname: grafana
+    restart: always
+    ports:
+      - '3000:3000'
+    networks:
+      - monitor
+    volumes:
+      - './datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml'
+    depends_on:
+      - prometheus
