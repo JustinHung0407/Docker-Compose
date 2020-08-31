@@ -2,11 +2,6 @@
 #  Title:  SonarQube Docker-compose
 #  Author: Justin Hung
 #  Date:   28 Aug 2020
-# 
-# If memery leak occur
-# vim /etc/sysctl.conf 
-# add or modify "vm.max_map_count=655360"
-# sysctl -p
 # ==========================================
 version: "3.5"
 

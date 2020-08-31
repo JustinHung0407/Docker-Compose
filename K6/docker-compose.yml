@@ -68,9 +68,3 @@ networks:
 volumes:
   grafana-storage: {}
   influxdb-storage: {}
-
-
-# not done yet 
-# more detail on https://github.com/loadimpact/k6/blob/master/docker-compose.yml
-# https://github.com/jkehres/docker-compose-influxdb-grafana/blob/master/docker-compose.yml
-# https://grafana.com/grafana/dashboards/12759
