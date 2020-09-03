@@ -10,7 +10,7 @@ The Administration Menu module displays the entire administrative menu tree
 
  * Dockerhub: https://hub.docker.com/_/sonarqube
 
-Usage
+Usage of Docker-Compose
 -----
 * Step 1:\
 change memory setting for Elasticsearch
@@ -24,6 +24,11 @@ change memory setting for Elasticsearch
     SonarQube would have fail starting due to db not found
     * `Open pgadmin4 and create database named "sonar"`
     * restart SonarQube
+
+Usage of Kubernetes yaml
+-----------------------
+* `kubectl apply -f`
+
 
 Backup and Restore
 ------
