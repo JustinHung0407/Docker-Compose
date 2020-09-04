@@ -2,6 +2,7 @@
 #  Title:  KairosDB Docker-compose
 #  Author: Justin Hung
 #  Date:   02 April 2020
+#  Status: Finished
 # ==========================================
 
 version: "3.7"

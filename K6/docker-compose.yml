@@ -2,6 +2,7 @@
 #  Title:  K6 Docker-compose
 #  Author: Justin Hung
 #  Date:   7 Aug 2020
+#  Status: Finished
 # ==========================================
 
 version: "3.4"
