@@ -11,7 +11,7 @@ services:
     image: gitea/gitea:latest
     container_name: gitea
     environment:
-      - USER_UID=1000
+      - USER_UID=1000w
       - USER_GID=1000
       - DB_TYPE=postgres
       - DB_HOST=gitea-db:5432
@@ -25,7 +25,7 @@ services:
       - "3000:3000"
       - "222:22"
     depends_on:
-      - db
+      - gitea-db
     volumes:
       - gitea:/data
       - /etc/timezone:/etc/timezone:ro

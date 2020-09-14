@@ -8,7 +8,7 @@ version: '2'
 
 services:
   drone-server:
-    image: drone/drone:1
+    image: drone/drone:latest
     container_name: drone-server
     ports:
       - 8081:80
@@ -24,9 +24,9 @@ services:
       - DRONE_RPC_SECRET=drone-secret
       - DRONE_AGENTS_ENABLED=true
       # GitHub Config
-      - DRONE_GITHUB_SERVER=https://github.com
-      - DRONE_GITHUB_CLIENT_ID=your-github-client-id
-      - DRONE_GITHUB_CLIENT_SECRET=your-github-secret
+      - DRONE_GITEA_SERVER=http://localhost:3000/
+      - DRONE_GITEA_CLIENT_ID=4803ded-740f-4823-8fbf-cb519b410429
+      - DRONE_GITEA_CLIENT_SECRET=0VZCJr0FhmGRXZqLXQrIUcZwCP6LIGmMkQFr1LPJ7vY=
       - DRONE_LOGS_PRETTY=true
       - DRONE_LOGS_COLOR=true
 
@@ -44,7 +44,7 @@ services:
   
   drone-runner:
 
-    image: drone/drone-runner-docker:1
+    image: drone/drone-runner-docker:latest
     restart: always
     ports:
       - 3000:3000
