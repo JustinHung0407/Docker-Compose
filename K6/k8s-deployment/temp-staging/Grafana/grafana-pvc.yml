@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: grafana
+  annotations:
+    volume.beta.kubernetes.io/storage-class: csi-ceph-rbd
+    volume.beta.kubernetes.io/storage-provisioner: rbd.csi.ceph.com
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi

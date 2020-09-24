@@ -1,0 +1,16 @@
+apiVersion: baas.twcc.ai/v1alpha1
+kind: TenantService
+metadata:
+  name: grafana-ts
+  namespace: grafana
+  labels:
+    app: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+  - exposeName: grafana
+    name: grafana-ts
+    protocol: TCP
+    port: 3000
+    targetPort: 3000

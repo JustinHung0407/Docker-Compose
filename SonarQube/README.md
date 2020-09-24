@@ -49,7 +49,7 @@ Configuration
     sonarqube {
         properties {
             property "sonar.projectName", "Java :: GitOps :: SonarQube Scanner for Gradle"
-            property 'sonar.host.url', 'http://localhost:9000'
+            property 'sonar.host.url', 'https://sonarqube-416612ff.baas.tmpstg.twcc.tw/'
             property "sonar.projectKey", "org.sonarqube:gitops-sonar-test"
             property "sonar.scm.disabled", "true"
             property "sonar.sourceEncoding", "UTF-8"
@@ -86,8 +86,25 @@ Configuration
 
 * Go Gradle Config
   * https://docs.sonarqube.org/latest/analysis/languages/go/?src=sidebar
-* JavaScript Gradle Config
+  * Go test config
+    ```
+    sonarqube {
+    properties {
+        property 'sonar.sources', '.'
+        property 'sonar.exclusions', '**/*_test.go,**/generate_source.go,**/*_generated.go,**/build/**,**/.gogradle/**'
+        property 'sonar.tests', '.'
+        property 'sonar.test.inclusions', '**/*_test.go'
+        property 'sonar.test.exclusions', '**/build/**,**/.gogradle/**'
+        property 'sonar.go.tests.reportPaths', "${project.projectDir}/.gogradle/reports/test-report.out"
+        property 'sonar.go.coverage.reportPaths', "${project.projectDir}/.gogradle/reports/coverage/profiles/github.com%2FSonarSource%2Fsonar-go%2Fuast-generator-go.out"
+    }
+    }
+    ```
+* JavaScript LCOV Config
   * https://docs.sonarqube.org/latest/analysis/languages/javascript/
+  * https://docs.sonarqube.org/pages/viewpage.action?pageId=5312326
+  * https://sergimansilla.com/blog/test-coverage-node/
+  * `sonar.javascript.lcov.reportPaths`
 
 Backup and Restore
 ------
