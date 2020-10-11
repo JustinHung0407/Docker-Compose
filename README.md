@@ -1,5 +1,9 @@
 # Docker-Compose
 > **Local test only**
+> https://github.com/search?q=docker-compose+collect
+https://github.com/cristaloleg/docker-compose-collection
+https://github.com/chrvadala/docker-compose-examples
+https://github.com/justlaputa/collectd-influxdb-grafana-docker
 
 INTRODUCTION
 ------------

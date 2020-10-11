@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: default
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: 'quay.io/keycloak/keycloak:latest'
+          resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 400m
+            memory: 512Mi
+          env:
+            - name: KEYCLOAK_LOGLEVEL
+              value: "DEBUG"
+            - name: KEYCLOAK_USER
+              value: admin
+            - name: KEYCLOAK_PASSWORD
+              value: password
+            - name: PROXY_ADDRESS_FORWARDING
+              value: 'true'
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_PASSWORD
+              value: "password"
+            - name: POSTGRES_PORT_5432_TCP_ADDR
+              value: "keycloak-db-postgresql"
+            - name: POSTGRES_PORT_5432_TCP_PORT
+              value: "5432"
+            - name: POSTGRES_DATABASE
+              value: "keycloak-db"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+          readinessProbe:
+            httpGet:
+              path: /auth/realms/master
+              port: 8080
