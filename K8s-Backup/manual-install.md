@@ -33,6 +33,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
     * Clone project
         * `git clone --single-branch --branch v1.5.1 https://github.com/vmware-tanzu/velero.git`
         * `git clone https://github.com/heptio/velero`
+        * `cd velero`
     * Create file "credentials-velero"
         * ```
           echo "[default]
@@ -53,14 +54,14 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
         ```
     * Test example
       1. Create deployment
-         1. `kubectl apply -f velero/examples/nginx-app/base.yaml`
+         1. `kubectl apply -f examples/nginx-app/base.yaml`
          2. `kubectl get deployments -l component=velero --namespace=velero`
          3. `kubectl get deployments --namespace=nginx-example`
 
       2. Backup
-         1. `velero backup create nginx-backup --selector app=nginx`
+         1. `velero backup create nginx-backup --selector app=nginx --wait`
          2. `velero backup describe nginx-backup`
-         3. velero backup create sonarqube --include-namespaces sonar
+         3. `velero backup create nginx-backup --include-namespaces nginx-example`
 
       3. Test disaster
          1. `kubectl delete namespace nginx-example`

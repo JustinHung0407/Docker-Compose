@@ -1,9 +1,11 @@
 # Docker-Compose
-> **Local test only**
-> https://github.com/search?q=docker-compose+collect
-https://github.com/cristaloleg/docker-compose-collection
-https://github.com/chrvadala/docker-compose-examples
-https://github.com/justlaputa/collectd-influxdb-grafana-docker
+> **For develope usage**
+
+
+* https://github.com/search?q=docker-compose+collect
+* https://github.com/cristaloleg/docker-compose-collection
+* https://github.com/chrvadala/docker-compose-examples
+* https://github.com/justlaputa/collectd-influxdb-grafana-docker
 
 INTRODUCTION
 ------------
@@ -17,6 +19,8 @@ Just Recording Compose files in my free time.
 BUILD
 -----
 `docker-compose up -d`
+
+`kubectl apply -f deployfile.yml`
 
 CHEATSHEET
 ----------
