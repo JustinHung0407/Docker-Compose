@@ -20,13 +20,13 @@ self-scaling, self-healing storage services.
 
 Velero is a tool to back up and restore your Kubernetes cluster resources and persistent volumes.
 
-1. Install HomeBrew 
-    * [https://brew.sh/](https://brew.sh/)
+1. 
 2. Install velero
     * install cli 
+      * Install by `brew`
+        * Install HomeBrew [https://brew.sh/](https://brew.sh/)
         * `brew install velero`
-        
-          or  
+      * Install by tar  
         * curl -LO https://github.com/heptio/velero/releases/download/v1.5.1/velero-v1.5.1-linux-amd64.tar.gz
         * tar -C /usr/local/bin -xzvf velero-v1.5.1-linux-amd64.tar.gz
         * export PATH=$PATH:/usr/local/bin/velero-v1.5.1-linux-amd64/
@@ -40,7 +40,8 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
           aws_access_key_id = minio
           aws_secret_access_key = minio123" > credentials-velero
           ```
-    * `kubectl apply -f examples/minio/00-minio-deployment.yaml`
+    * Useing minio
+      * `kubectl apply -f examples/minio/00-minio-deployment.yaml`
     * Installation config  
         ```
         velero install \
@@ -57,11 +58,12 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          1. `kubectl apply -f examples/nginx-app/base.yaml`
          2. `kubectl get deployments -l component=velero --namespace=velero`
          3. `kubectl get deployments --namespace=nginx-example`
+         4. `kubectl annotate pod/nginx-deployment-65fb6d9c4-8rzvp backup.velero.io/backup-volumes=nginx-pvc -n nginx-example`
 
       2. Backup
          1. `velero backup create nginx-backup --selector app=nginx --wait`
          2. `velero backup describe nginx-backup`
-         3. `velero backup create nginx-backup --include-namespaces nginx-example`
+         3. `velero backup create nginx-backup --include-namespaces nginx-example --wait`
 
       3. Test disaster
          1. `kubectl delete namespace nginx-example`
@@ -71,3 +73,6 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          1. `velero restore create --from-backup nginx-backup`
          2. `velero restore get`
          3. `kubectl get services --namespace=nginx-example`
+
+      5. Schedule
+         1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "0 */1 * * *"`
