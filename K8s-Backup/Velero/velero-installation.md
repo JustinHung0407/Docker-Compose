@@ -1,27 +1,8 @@
-# Kubernetes Backup
-
-
-## Rook Operator
-
-Rook turns distributed storage systems into self-managing,
-self-scaling, self-healing storage services. 
-
-1. Clone project
-    * `git clone --single-branch --branch  release-1.4 https://github.com/rook/rook.git`
-    * `cd rook/cluster/examples/kubernetes/ceph`
-2. Apply 
-`kubectl create -f common.yaml`
-`kubectl create -f operator.yaml`
-`kubectl create -f cluster-test.yaml`
-
-
-
-## Velero
+# Velero
 
 Velero is a tool to back up and restore your Kubernetes cluster resources and persistent volumes.
 
-1. 
-2. Install velero
+1. Install velero
     * install cli 
       * Install by `brew`
         * Install HomeBrew [https://brew.sh/](https://brew.sh/)
@@ -51,6 +32,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
             --bucket velero \
             --secret-file ./credentials-velero \
             --use-volume-snapshots=false \
+            --default-volumes-to-restic \
             --backup-location-config region=minio,s3ForcePathStyle="true",s3Url=http://minio.velero.svc:9000
         ```
     * Test example
@@ -58,21 +40,24 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          1. `kubectl apply -f examples/nginx-app/base.yaml`
          2. `kubectl get deployments -l component=velero --namespace=velero`
          3. `kubectl get deployments --namespace=nginx-example`
-         4. `kubectl annotate pod/nginx-deployment-65fb6d9c4-8rzvp backup.velero.io/backup-volumes=nginx-pvc -n nginx-example`
+      2. Annotate
+         1. `kubectl annotate pod/nginx-deployment-65fb6d9c4-8rzvp backup.velero.io/backup-volumes=nginx-pvc -n nginx-example`
+         2. `kubectl annotate pods --all backup.velero.io/backup-volumes=drone-pvc -n drone`
 
-      2. Backup
+      3. Backup
          1. `velero backup create nginx-backup --selector app=nginx --wait`
          2. `velero backup describe nginx-backup`
          3. `velero backup create nginx-backup --include-namespaces nginx-example --wait`
 
-      3. Test disaster
+      4. Test disaster
          1. `kubectl delete namespace nginx-example`
          2. `kubectl get deployments --namespace=nginx-example`
 
-      4. Restore
+      5. Restore
          1. `velero restore create --from-backup nginx-backup`
          2. `velero restore get`
          3. `kubectl get services --namespace=nginx-example`
 
-      5. Schedule
-         1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "0 */1 * * *"`
+      6. Schedule
+         1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "@every 24h"`
+         2. `velero schedule create twcc-baas --schedule "@every 24h" --wait`
