@@ -35,6 +35,17 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
             --default-volumes-to-restic \
             --backup-location-config region=minio,s3ForcePathStyle="true",s3Url=http://minio.velero.svc:9000
         ```
+        ```
+        velero install \
+            --use-restic \
+            --provider aws \
+            --plugins velero/velero-plugin-for-aws:latest \
+            --bucket temp-staging-backup \
+            --secret-file ./credentials-velero-twcc \
+            --use-volume-snapshots=false \
+            --default-volumes-to-restic \
+            --backup-location-config region=us-east-1,s3ForcePathStyle="true",s3Url=https://cos.twcc.ai
+        ```
     * Test example
       1. Create deployment
          1. `kubectl apply -f examples/nginx-app/base.yaml`
@@ -48,16 +59,20 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          1. `velero backup create nginx-backup --selector app=nginx --wait`
          2. `velero backup describe nginx-backup`
          3. `velero backup create nginx-backup --include-namespaces nginx-example --wait`
+         4. Backup automatically
+            1. `velero backup create twcc-baas --default-volumes-to-restic --wait`
 
       4. Test disaster
          1. `kubectl delete namespace nginx-example`
          2. `kubectl get deployments --namespace=nginx-example`
 
       5. Restore
-         1. `velero restore create --from-backup nginx-backup`
-         2. `velero restore get`
-         3. `kubectl get services --namespace=nginx-example`
+         1. `velero restore get`
+         2. `velero restore create --from-backup nginx-backup`
+         4. Restoring to different namespace and useing certain namespace
+            1. `velero restore create --from-backup twcc-baas-backup-20201013105651 --namespace-mappings sonar:sonar-test-backup --include-namespaces sonar`
+         5. More options: [velero restore reference](https://velero.io/docs/v1.5/restore-reference/)
 
       6. Schedule
          1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "@every 24h"`
-         2. `velero schedule create twcc-baas --schedule "@every 24h" --wait`
+         2. `velero schedule create twcc-baas-backup --schedule "0 0 */24 * *"`

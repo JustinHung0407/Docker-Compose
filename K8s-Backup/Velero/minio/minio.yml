@@ -5,6 +5,25 @@ metadata:
   name: velero
 
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minio-pvc
+  namespace: velero
+  labels:
+    component: minio
+  annotations:
+    volume.beta.kubernetes.io/storage-class: csi-ceph-rbd
+    volume.beta.kubernetes.io/storage-provisioner: rbd.csi.ceph.com
+spec:
+  accessModes:
+    - ReadWriteOnce
+    # ReadWriteMany when storage available
+  resources:
+    requests:
+      storage: 14Ti
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,31 +42,31 @@ spec:
       labels:
         component: minio
     spec:
+      nodeName: bctcstg02
       volumes:
-      - name: storage
-        emptyDir: {}
-      - name: config
-        emptyDir: {}
+        - name: minio-storage
+          persistentVolumeClaim:
+            claimName: minio-pvc
       containers:
-      - name: minio
-        image: minio/minio:latest
-        imagePullPolicy: IfNotPresent
-        args:
-        - server
-        - /storage
-        - --config-dir=/config
-        env:
-        - name: MINIO_ACCESS_KEY
-          value: "minio"
-        - name: MINIO_SECRET_KEY
-          value: "minio123"
-        ports:
-        - containerPort: 9000
-        volumeMounts:
-        - name: storage
-          mountPath: "/storage"
-        - name: config
-          mountPath: "/config"
+        - name: minio
+          image: minio/minio:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - /storage
+            - --config-dir=/config
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: "minio"
+            - name: MINIO_SECRET_KEY
+              value: "minio123"
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - mountPath: /storage
+              name: minio-storage
+            - mountPath: /config
+              name: minio-storage
 
 ---
 apiVersion: v1
@@ -82,18 +101,20 @@ spec:
     metadata:
       name: minio-setup
     spec:
+      nodeName: bctcstg02
       restartPolicy: OnFailure
       volumes:
-      - name: config
-        emptyDir: {}
+        - name: minio-storage
+          persistentVolumeClaim:
+            claimName: minio-pvc
       containers:
-      - name: mc
-        image: minio/mc:latest
-        imagePullPolicy: IfNotPresent
-        command:
-        - /bin/sh
-        - -c
-        - "mc --config-dir=/config config host add velero http://minio:9000 minio minio123 && mc --config-dir=/config mb -p velero/velero"
-        volumeMounts:
-        - name: config
-          mountPath: "/config"
+        - name: mc
+          image: minio/mc:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - "mc --config-dir=/config config host add velero http://minio:9000 minio minio123 && mc --config-dir=/config mb -p velero/velero"
+          volumeMounts:
+            - mountPath: /config
+              name: minio-storage
