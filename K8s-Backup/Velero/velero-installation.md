@@ -21,6 +21,11 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
           aws_access_key_id = minio
           aws_secret_access_key = minio123" > credentials-velero
           ```
+          ```
+          echo "[default]
+          aws_access_key_id = 328LWHCFU51FNDE6989X
+          aws_secret_access_key = 8zhxXUKyxAwDa7pNMZUNoXdO4JGIEtRWnZ5PKlfW" > credentials-velero-twcc
+          ```
     * Useing minio
       * `kubectl apply -f examples/minio/00-minio-deployment.yaml`
     * Installation config  
@@ -37,11 +42,38 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
         ```
         ```
         velero install \
+            --velero-pod-cpu-request 800m \
+            --velero-pod-mem-request 256Mi \
+            --velero-pod-cpu-limit 4 \
+            --velero-pod-mem-limit 1024Mi \
             --use-restic \
+            --restic-pod-cpu-request 800m \
+            --restic-pod-mem-request "256Mi" \
+            --restic-pod-cpu-limit "4" \
+            --restic-pod-mem-limit "2048Mi" \
             --provider aws \
             --plugins velero/velero-plugin-for-aws:latest \
             --bucket temp-staging-backup \
-            --secret-file ./credentials-velero-twcc \
+            --secret-file /tmp/velero/credentials-velero-twcc \
+            --use-volume-snapshots=false \
+            --default-volumes-to-restic \
+            --backup-location-config region=us-east-1,s3ForcePathStyle="true",s3Url=https://cos.twcc.ai
+        ```
+        ```
+        velero install \
+            --velero-pod-cpu-request 1600m \
+            --velero-pod-mem-request 256Mi \
+            --velero-pod-cpu-limit 4 \
+            --velero-pod-mem-limit 1024Mi \
+            --use-restic \
+            --restic-pod-cpu-request 1600m \
+            --restic-pod-mem-request "256Mi" \
+            --restic-pod-cpu-limit "4" \
+            --restic-pod-mem-limit "4096Mi" \
+            --provider aws \
+            --plugins velero/velero-plugin-for-aws:latest \
+            --bucket tmpstg-k8s-backup \
+            --secret-file credentials-velero-twcc \
             --use-volume-snapshots=false \
             --default-volumes-to-restic \
             --backup-location-config region=us-east-1,s3ForcePathStyle="true",s3Url=https://cos.twcc.ai
@@ -60,7 +92,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          2. `velero backup describe nginx-backup`
          3. `velero backup create nginx-backup --include-namespaces nginx-example --wait`
          4. Backup automatically
-            1. `velero backup create twcc-baas --default-volumes-to-restic --wait`
+            1. `velero backup create twcc-baas-backup --wait`
 
       4. Test disaster
          1. `kubectl delete namespace nginx-example`
@@ -69,10 +101,32 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
       5. Restore
          1. `velero restore get`
          2. `velero restore create --from-backup nginx-backup`
-         4. Restoring to different namespace and useing certain namespace
+         3. Restoring to different namespace and useing certain namespace
             1. `velero restore create --from-backup twcc-baas-backup-20201013105651 --namespace-mappings sonar:sonar-test-backup --include-namespaces sonar`
-         5. More options: [velero restore reference](https://velero.io/docs/v1.5/restore-reference/)
+            2. `velero restore create --from-backup twcc-baas-backup-20201013105651 --include-namespaces sonar --include-resources PersistentVolume,PersistentVolumeClaims --include-cluster-resources=true`
+            3. `velero restore create --from-backup only-sonar-pv --include-namespaces sonar --include-resources PersistentVolume --include-cluster-resources=true`
+         4. More options: 
+            1. [velero restore reference](https://velero.io/docs/v1.5/restore-reference/)
+            2. [Resource filtering](https://velero.io/docs/v1.5/resource-filtering/#docs)
 
       6. Schedule
          1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "@every 24h"`
          2. `velero schedule create twcc-baas-backup --schedule "0 0 */24 * *"`
+
+
+velero backup create sonar-test-backup --include-namespaces sonar --wait
+velero restore create --from-backup sonar-test-backup --namespace-mappings sonar:sonar-test-backup --include-namespaces sonar
+
+
+
+2. Some Credentials
+  * registry.tmpstg.twcc.tw/backup/velero:0.0.9
+  * export RESTIC_REPOSITORY=https://cos.twcc.ai/demo-restic
+  * export AWS_ACCESS_KEY_ID="328LWHCFU51FNDE6989X"
+  * export AWS_SECRET_ACCESS_KEY="8zhxXUKyxAwDa7pNMZUNoXdO4JGIEtRWnZ5PKlfW"
+  * export RESTIC_PASSWORD="I9n7G7G0ZpDWA3GOcJbIuwQCGvGUBkU5"
+  * restic -r s3:cos.twcc.ai/temp-staging-backup/restic 
+
+
+
+velero restore create --from-backup twcc-baas-backup-20201013105651 --include-resources PersistentVolume,PersistentVolumeClaims --namespace-mappings drone:drone-test-backup --include-namespaces drone

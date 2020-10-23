@@ -1,0 +1,56 @@
+# ==========================================
+#  Title:  Apache Pulsar Docker-compose
+#  Author: Justin Hung
+#  Date:   23 Oct 2020
+#  Status: Finished
+# ==========================================
+
+version: "3.7"
+
+services:
+  apache-pulsar:
+    image: apachepulsar/pulsar:2.6.0
+    container_name: pulsar
+    ports:
+      - 8080:8080
+      - 6650:6650
+    networks:
+      - pulsar
+    environment:
+      PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+    command: bin/pulsar standalone
+
+  pulsar-express:
+    image: justinhung0407/pulsar-express:latest
+    container_name: pulsar-ui
+    networks:
+      - pulsar
+    ports:
+      - 3000:3000
+    environment:
+      PE_CONNECTION_URL: "http://host.docker.internal:8080"
+
+  # dashboard:
+  #   image: apachepulsar/pulsar-dashboard
+  #   container_name: pulsar-dashboard
+  #   depends_on:
+  #     - apache-pulsar
+  #   ports:
+  #     - "8081:80"
+  #   environment:
+  #     SERVICE_URL: http://apache-pulsar:8080
+
+networks:
+  pulsar:
+    external: false
+
+volumes:
+  pulsardata:
+    external: true
+    # docker volume create pulsardata
+  pulsarconf:
+    external: true
+    # docker volume create pulsarconf
