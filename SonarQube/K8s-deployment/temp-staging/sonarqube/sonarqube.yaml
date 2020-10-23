@@ -15,6 +15,7 @@ spec:
       labels:
         app: sonarqube
     spec:
+      nodeName: bctcstg02
       initContainers:
         - name: init-sysctl
           image: registry.tmpstg.twcc.tw/sonarqube/busybox

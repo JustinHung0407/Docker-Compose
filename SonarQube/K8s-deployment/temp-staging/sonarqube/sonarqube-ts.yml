@@ -1,0 +1,14 @@
+apiVersion: baas.twcc.ai/v1alpha1
+kind: TenantService
+metadata:
+  name: sonar-ts
+  namespace: sonar
+spec:
+  ports:
+    - exposeName: sonarqube
+      name: sonarqube
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: sonarqube

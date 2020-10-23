@@ -33,6 +33,7 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeName: bctcstg02
       containers:
         - name: postgres
           image: registry.tmpstg.twcc.tw/sonarqube/postgres:11.4
