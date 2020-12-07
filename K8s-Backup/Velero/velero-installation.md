@@ -8,11 +8,11 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
         * Install HomeBrew [https://brew.sh/](https://brew.sh/)
         * `brew install velero`
       * Install by tar  
-        * curl -LO https://github.com/heptio/velero/releases/download/v1.5.1/velero-v1.5.1-linux-amd64.tar.gz
-        * tar -C /usr/local/bin -xzvf velero-v1.5.1-linux-amd64.tar.gz
-        * export PATH=$PATH:/usr/local/bin/velero-v1.5.1-linux-amd64/
+        * curl -LO https://github.com/heptio/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz
+        * tar -C /usr/local/bin -xzvf velero-v1.5.2-linux-amd64.tar.gz
+        * export PATH=$PATH:/usr/local/bin/velero-v1.5.2-linux-amd64/
     * Clone project
-        * `git clone --single-branch --branch v1.5.1 https://github.com/vmware-tanzu/velero.git`
+        * `git clone --single-branch --branch v1.5.2 https://github.com/vmware-tanzu/velero.git`
         * `git clone https://github.com/heptio/velero`
         * `cd velero`
     * Create file "credentials-velero"
@@ -54,7 +54,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
             --provider aws \
             --plugins velero/velero-plugin-for-aws:latest \
             --bucket temp-staging-backup \
-            --secret-file /tmp/velero/credentials-velero-twcc \
+            --secret-file credentials-velero-twcc \
             --use-volume-snapshots=false \
             --default-volumes-to-restic \
             --backup-location-config region=us-east-1,s3ForcePathStyle="true",s3Url=https://cos.twcc.ai
@@ -110,8 +110,8 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
             2. [Resource filtering](https://velero.io/docs/v1.5/resource-filtering/#docs)
 
       6. Schedule
-         1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule "@every 24h"`
-         2. `velero schedule create twcc-baas-backup --schedule "0 0 */24 * *"`
+         1. `velero schedule create nginx-backup --include-namespaces nginx-example --schedule="@every 24h" --ttl 7200h0m0s`
+         2. `velero schedule create twcc-baas-backup --schedule="0 0 */24 * *"`
 
 
 velero backup create sonar-test-backup --include-namespaces sonar --wait

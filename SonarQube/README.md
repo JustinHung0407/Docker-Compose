@@ -39,13 +39,13 @@ Usage of Kubernetes yaml
   * list database `\l`
   * connect to db `\c $dbname`
   * list table `\dt`
-  * backup `pg_dumpall -h localhost -U admin > pg_backup.bak`
-  * restore `psql -h localhost -U admin -f pg_backup.bak postgres`  pg_restore -Fc -C  pg_backup.bak
-  * --data-only
-  * [](https://medium.com/@lianankuan/%E5%AD%B8%E7%BF%92postgresql-rails%E7%9A%84%E9%96%8B%E7%99%BC%E7%BF%92%E6%85%A3-262be0e26b99)
+  * [psql commands](https://medium.com/@lianankuan/%E5%AD%B8%E7%BF%92postgresql-rails%E7%9A%84%E9%96%8B%E7%99%BC%E7%BF%92%E6%85%A3-262be0e26b99)
   * Backup
     * `pg_dump -U [user] [[dbname] > [name.backup.sql]`
     * `pg_dump -U admin sonar > sonar.backup.sql`
+
+  * Copy from pod 
+    * `k cp sonar/postgres-7c5c68569c-2vpbw:/backup/sonar.backup.sql sonar.back.sql`
   * Restore
     * `psql -U [user] [dbname] < [name.backup.sql]`
     * `psql -U admin sonar < sonar.backup.sql`

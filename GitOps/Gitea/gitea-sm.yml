@@ -1,0 +1,21 @@
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: gitea-svc-monitor
+  namespace: gitops
+  labels:
+    monitoring: enabled
+    app: gitea-export
+    release: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: gitea-gitea
+  endpoints:
+    - path: /metrics
+      port: http
+      protocol: TCP
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - gitops

@@ -1,0 +1,9 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: gitea-monitor
+  namespace: gitops
+spec:
+  serviceMonitorSelector:
+    matchLabels:
+      app: gitea-export

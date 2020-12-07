@@ -1,5 +1,7 @@
 # Backup scripts
 
+// no need the following anymore after velero update to 1.5
+
 ### Gitea
 `kubectl annotate pods gitea-gitea-54b9f7d579-db59q backup.velero.io/backup-volumes=gitea-data,gitea-config -n gitops`
 `kubectl annotate pods gitea-mariadb-0 backup.velero.io/backup-volumes=data,config -n gitops`

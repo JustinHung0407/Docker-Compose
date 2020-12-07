@@ -1,0 +1,25 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  namespace: sonar
+spec:
+  # nodeName: bctcstg02
+  containers:
+    - name: test-pv-pod
+      image: nginx
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: mypd
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 2048Mi
+        requests:
+          cpu: 1000m
+          memory: 1024Mi
+  volumes:
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: postgres
