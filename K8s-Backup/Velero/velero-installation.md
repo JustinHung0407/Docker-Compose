@@ -130,3 +130,5 @@ velero restore create --from-backup sonar-test-backup --namespace-mappings sonar
 
 
 velero restore create --from-backup twcc-baas-backup-20201013105651 --include-resources PersistentVolume,PersistentVolumeClaims --namespace-mappings drone:drone-test-backup --include-namespaces drone
+
+velero restore create --from-backup twcc-baas-backup-20201206022540 --namespace-mappings drone:drone-test-backup --include-namespaces drone

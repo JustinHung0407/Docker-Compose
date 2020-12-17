@@ -1,0 +1,1 @@
+docker run --name local-mariadb -e MYSQL_ROOT_PASSWORD=9901 -d mariadb:tag
