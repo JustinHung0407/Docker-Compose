@@ -22,7 +22,6 @@ spec:
       labels:
         app: influxdb
     spec:
-      nodeName: bctcstg02
       containers:
         - name: influxdb
           image: registry.tmpstg.twcc.tw/influxdb/influxdb:latest
