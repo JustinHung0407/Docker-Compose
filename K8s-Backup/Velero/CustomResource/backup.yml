@@ -5,6 +5,7 @@ metadata:
   namespace: velero
 spec:
   schedule: "@every 24h"
+  # schedule: "0 0 */24 * *"
   template:
     hooks: {}
     ttl: 720h0m0s

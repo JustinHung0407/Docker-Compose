@@ -13,3 +13,20 @@ kubectl delete pod $(kubectl get po -A |grep drone|awk '{print $2}') -n drone --
 kubectl delete pod --grace-period 0 --force -n <namespace> <pod_name>
 
 kubectl get pod -n drone | grep ImagePullBackOff | awk '{print $1}' | xargs kubectl delete pod --grace-period 0 --force -n drone
+
+<!-- Namespace terminating -->
+```
+kubectl get namespaces velero -o json | jq '.spec.finalizers = []' > velero-ns.json
+```
+```
+kubectl proxy
+```
+``` bash
+curl -k -H "Content-Type:application/json" -X PUT --data-binary @velero-ns.json http://127.0.0.1:8001/api/v1/namespaces/velero/finalize
+```
+or
+``` json
+"spec": {
+        "finalizers": []
+    }
+```

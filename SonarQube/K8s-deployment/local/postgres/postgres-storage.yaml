@@ -6,11 +6,9 @@ metadata:
   labels:
     app: postgres
 spec:
+  storageClassName: csi-ceph-rbd
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-  selector:
-    matchLabels:
-      app: postgres
+      storage: 50Gi

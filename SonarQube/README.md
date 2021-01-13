@@ -45,7 +45,7 @@ Usage of Kubernetes yaml
     * `pg_dump -U admin sonar > sonar.backup.sql`
 
   * Copy from pod 
-    * `k cp sonar/postgres-7c5c68569c-2vpbw:/backup/sonar.backup.sql sonar.back.sql`
+    * `k cp sonar/postgres-7c5c68569c-h8pfr:/backup/sonar.backup.sql sonar.back.sql`
   * Restore
     * `psql -U [user] [dbname] < [name.backup.sql]`
     * `psql -U admin sonar < sonar.backup.sql`

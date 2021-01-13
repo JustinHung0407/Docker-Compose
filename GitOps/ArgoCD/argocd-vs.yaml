@@ -1,0 +1,17 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: argocd-vs
+  namespace: argocd
+spec:
+  hosts:
+    - argocd-server.argocd.svc.cluster.local
+    - argocd.127-0-0-1.nip.io
+  gateways:
+    - istio-system/default
+  http:
+    - route:
+        - destination:
+            host: argocd-server.argocd.svc.cluster.local
+            port:
+              number: 20001

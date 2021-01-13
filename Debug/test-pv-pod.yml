@@ -23,3 +23,30 @@ spec:
     - name: mypd
       persistentVolumeClaim:
         claimName: postgres
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  namespace: gitops
+spec:
+  # nodeName: bctcstg02
+  containers:
+    - name: test-pv-pod
+      image: nginx
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - name: gitea-data
+          mountPath: /data
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+  volumes:
+    - name: gitea-data
+      persistentVolumeClaim:
+        claimName: gitea-pvc

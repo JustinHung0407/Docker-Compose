@@ -5,10 +5,8 @@ metadata:
   namespace: sonar
   labels:
     app: sonarqube
-  annotations:
-    volume.beta.kubernetes.io/storage-class: csi-ceph-rbd
-    volume.beta.kubernetes.io/storage-provisioner: rbd.csi.ceph.com
 spec:
+  storageClassName: csi-ceph-rbd
   accessModes:
     - ReadWriteOnce
   resources:
