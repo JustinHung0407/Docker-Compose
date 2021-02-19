@@ -1,0 +1,17 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: jenkins-vs
+  namespace: istio-system
+spec:
+  hosts:
+    - jenkins-operator-http-example.default.svc.cluster.local
+    - jenkins.127-0-0-1.nip.io
+  gateways:
+    - istio-system/default
+  http:
+    - route:
+        - destination:
+            host: jenkins-operator-http-example.default.svc.cluster.local
+            port:
+              number: 8080

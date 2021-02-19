@@ -117,5 +117,3 @@ spec:
               cpu: 50m
               memory: 64Mi
           imagePullPolicy: IfNotPresent
-      nodeName: bctcstg01
-

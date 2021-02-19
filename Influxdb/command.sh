@@ -37,6 +37,9 @@ SELECT percentile("value", 100) FROM "checks" WHERE time >= now() - 1h GROUP BY 
 
 DROP RETENTION POLICY "what_is_time" ON "NOAA_water_database"
 
+## Check Disk Usage
+`du -sh /var/lib/influxdb/data/<db name>`
+
 
 ## Backup && Restore 
 influxd backup <path-to-backup>

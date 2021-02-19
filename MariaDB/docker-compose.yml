@@ -1,16 +1,25 @@
-version: "3.1"
+version: '2'
+
+networks:
+  app-tier:
+    driver: bridge
 
 services:
   db:
-    image: mariadb
+    image: bitnami/mariadb:10.3.20-debian-9-r19
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 9901
+      MARIADB_ROOT_PASSWORD: 9901
     ports:
       - 3306:3306
+    networks:
+      - app-tier
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-tier

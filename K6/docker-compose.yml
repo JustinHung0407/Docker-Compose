@@ -1,55 +1,34 @@
 # ==========================================
 #  Title:  K6 Docker-compose
 #  Author: Justin Hung
-#  Date:   7 Aug 2020
+#  Date:   19 Feb 2021
 #  Status: Finished
 # ==========================================
 
-version: "3.4"
+version: '3.4'
 
 services:
   influxdb:
     image: influxdb:latest
-    container_name: influxdb-container
-    restart: always
+    networks:
+      - monitoring-network
     ports:
-      - "8083:8083"
       - "8086:8086"
-      - "8090:8090"
-    networks:
-      - monitoring-network
-    env_file:
-      - 'env.influxdb'
-    volumes:
-    # Data persistency
-    # sudo mkdir -p /srv/docker/influxdb/data
-      - influxdb-storage:/var/lib/influxdb
-
-  telegraf:
-    image: telegraf:latest
-    container_name: telegraf-container
-    networks:
-      - monitoring-network
-    links:
-      - influxdb
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - INFLUXDB_DB=k6
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana-container
-    restart: always
-    ports:
-      - 3000:3000
-    env_file:
-      - 'env.grafana'
     networks:
       - monitoring-network
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
     volumes:
-      - grafana-storage:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
-    depends_on:
-      - influxdb
 
   k6:
     image: loadimpact/k6:latest

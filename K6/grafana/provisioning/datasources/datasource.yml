@@ -3,6 +3,8 @@ datasources:
   - name: InfluxDB
     type: influxdb
     access: proxy
+    database: k6
+    orgId: 1
     url: http://influxdb:8086
     isDefault: true
     editable: true
