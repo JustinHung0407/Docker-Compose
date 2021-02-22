@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  keycloak:
+    # If needed to import json backup
+    # build:
+    #   context: services/keycloak
+    # volumes:
+    #   - ./imports:/opt/jboss/keycloak/imports
+    # command:
+    #   - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: 70538068
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    volumes:
+      - /etc/letsencrypt/live/openid.omnithings.io/fullchain.pem:/etc/x509/https/tls.crt
+      - /etc/letsencrypt/live/openid.omnithings.io/privkey.pem:/etc/x509/https/tls.key
+    ports:
+      - 443:8443
+      - 80:8080
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local

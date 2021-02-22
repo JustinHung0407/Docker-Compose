@@ -1,0 +1,18 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: rook-ceph-vs
+  namespace: rook-ceph
+spec:
+  gateways:
+    - istio-system/default
+    - mesh
+  hosts:
+    - rook-ceph-mgr-dashboard.rook-ceph.svc.cluster.local
+    - ceph.127-0-0-1.nip.io
+  http:
+    - route:
+        - destination:
+            host: rook-ceph-mgr-dashboard.rook-ceph.svc.cluster.local
+            port:
+              number: 7000

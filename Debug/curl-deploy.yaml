@@ -1,0 +1,34 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: sleep
+  namespace: fabric-operator-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep
+  template:
+    metadata:
+      labels:
+        app: sleep
+    spec:
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: sleep-secret
+            defaultMode: 420
+            optional: true
+      containers:
+        - name: sleep
+          image: justinhung0407/curl:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sleep
+            - 3650d
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/sleep/tls
+# fabric.fabric-operator-system.svc.cluster.local
+
+# k exec -it pod/sleep-7d78f94b75-skfdn -n fabric-operator-system /bin/sh
