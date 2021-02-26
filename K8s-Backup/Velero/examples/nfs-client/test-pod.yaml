@@ -1,0 +1,45 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-nfs-pod
+  namespace: nginx-example
+spec:
+  containers:
+    - name: test-nfs-pod
+      image: gcr.io/google_containers/busybox:1.24
+      command:
+        - "/bin/sh"
+      args:
+        - "-c"
+        - "touch /mnt/SUCCESS && exit 0 || exit 1"
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc
+      persistentVolumeClaim:
+        claimName: test-nfs-pvc
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-ceph-pod
+  namespace: nginx-example
+spec:
+  containers:
+    - name: test-ceph-pod
+      image: gcr.io/google_containers/busybox:1.24
+      command:
+        - "/bin/sh"
+      args:
+        - "-c"
+        - "touch /mnt/SUCCESS && exit 0 || exit 1"
+      volumeMounts:
+        - name: ceph-pvc
+          mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: ceph-pvc
+      persistentVolumeClaim:
+        claimName: test-ceph-pvc

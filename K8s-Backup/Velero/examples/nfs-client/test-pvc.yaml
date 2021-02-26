@@ -1,0 +1,32 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: nginx-example
+  labels:
+    istio-injection: enabled
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-nfs-pvc
+  namespace: nginx-example
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-ceph-pvc
+  namespace: nginx-example
+spec:
+  storageClassName: csi-ceph-rbd
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi

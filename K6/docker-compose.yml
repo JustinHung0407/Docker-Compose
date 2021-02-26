@@ -3,15 +3,21 @@
 #  Author: Justin Hung
 #  Date:   19 Feb 2021
 #  Status: Finished
+#
+#  Usage
+#  $ docker-compose up -d influxdb grafana
+#  $ docker-compose run -v $PWD/samples:/scripts \
+#      k6 run /scripts/es6sample.js
 # ==========================================
 
-version: '3.4'
+version: "3.8"
 
 services:
   influxdb:
     image: influxdb:latest
     networks:
-      - monitoring-network
+      - k6
+      - grafana
     ports:
       - "8086:8086"
     environment:
@@ -20,20 +26,19 @@ services:
   grafana:
     image: grafana/grafana:latest
     networks:
-      - monitoring-network
+      - grafana
     ports:
       - "3000:3000"
     environment:
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_BASIC_ENABLED=false
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin1234
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
 
   k6:
     image: loadimpact/k6:latest
     networks:
-      - monitoring-network
+      - k6
     ports:
       - "6565:6565"
     environment:
@@ -42,9 +47,9 @@ services:
       - ./samples:/scripts
 
 networks:
-  monitoring-network:
-    driver: bridge
-    
+  k6:
+  grafana:
+
 volumes:
   grafana-storage: {}
   influxdb-storage: {}

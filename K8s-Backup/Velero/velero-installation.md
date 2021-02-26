@@ -8,11 +8,11 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
         * Install HomeBrew [https://brew.sh/](https://brew.sh/)
         * `brew install velero`
       * Install by tar  
-        * curl -LO https://github.com/vmware-tanzu/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz
-        * tar -C /usr/local/bin -xzvf velero-v1.5.2-linux-amd64.tar.gz
-        * export PATH=$PATH:/usr/local/bin/velero-v1.5.2-linux-amd64/
+        * curl -LO https://github.com/vmware-tanzu/velero/releases/download/v1.5.3/velero-v1.5.3-linux-amd64.tar.gz
+        * tar -C /usr/local/bin -xzvf velero-v1.5.3-linux-amd64.tar.gz
+        * export PATH=$PATH:/usr/local/bin/velero-v1.5.3-linux-amd64/
     * Clone project
-        * `git clone --single-branch --branch v1.5.2 https://github.com/vmware-tanzu/velero.git`
+        * `git clone --single-branch --branch v1.5.3 https://github.com/vmware-tanzu/velero.git`
         * `cd velero`
     * Create file "credentials-velero"
         * ```
@@ -61,7 +61,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
             --restic-pod-mem-limit "4096Mi" \
             --provider aws \
             --plugins velero/velero-plugin-for-aws:latest \
-            --bucket k8s-backup-production \
+            --bucket k8s-prod-backup-test \
             --secret-file credentials-velero-twcc \
             --use-volume-snapshots=false \
             --default-volumes-to-restic \
@@ -97,6 +97,12 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
          2. `velero schedule create twcc-baas-backup --schedule="0 0 */24 * *"`
          3. For 3ENV
             * `velero schedule create k8s-backup-daily --schedule="0 0 */24 * *"`
+      6. Delete
+         1. delete velero 
+            ```
+            kubectl delete namespace/velero clusterrolebinding/velero
+            kubectl delete crds -l component=velero 
+            ```
 
 
 velero backup create sonar-test-backup --include-namespaces sonar --wait
@@ -106,7 +112,7 @@ velero restore create --from-backup sonar-test-backup --namespace-mappings sonar
 velero backup create gitops-test-backup --include-namespaces gitops --wait
 velero restore create --from-backup gitops-test-backup --namespace-mappings gitops:test
 
-2. Restic advance commands
+1. Restic advance commands
   * `export RESTIC_REPOSITORY=https://cos.twcc.ai/demo-restic`
   * `export AWS_ACCESS_KEY_ID="328LWHCFU51FNDE6989X"`
   * `export AWS_SECRET_ACCESS_KEY="8zhxXUKyxAwDa7pNMZUNoXdO4JGIEtRWnZ5PKlfW"`
