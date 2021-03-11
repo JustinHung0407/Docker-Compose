@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-storage-deploy
+  namespace: test-storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-nfs
+  template:
+    metadata:
+      labels:
+        app: test-nfs
+    spec:
+      containers:
+        - name: test-nfs-pod
+          image: gcr.io/google_containers/busybox:1.24
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "--"
+          args:
+            - "touch /mnt/SUCCESS;echo 'Test NFS SUCCESS';while true; do sleep 30; done;"
+          volumeMounts:
+            - name: nfs-pvc
+              mountPath: "/mnt"
+        - name: test-ceph-pod
+          image: gcr.io/google_containers/busybox:1.24
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "--"
+          args:
+            - "touch /mnt/SUCCESS;echo 'Test CEPH SUCCESS';while true; do sleep 30; done;"
+          volumeMounts:
+            - name: ceph-pvc
+              mountPath: "/mnt"
+      volumes:
+        - name: nfs-pvc
+          persistentVolumeClaim:
+            claimName: test-nfs-pvc
+        - name: ceph-pvc
+          persistentVolumeClaim:
+            claimName: test-ceph-pvc
