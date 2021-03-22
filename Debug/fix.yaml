@@ -1,0 +1,56 @@
+kind: Gateway
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - '*.baas.twcc.ai'
+        - baas.twcc.ai
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - '*.baas.twcc.ai'
+        - baas.twcc.ai
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: baas.twcc.ai
+        minProtocolVersion: TLSV1_2
+        mode: SIMPLE
+    - hosts:
+        - '*.baas.twcc.ai'
+        - baas.twcc.ai
+      port:
+        name: https-order
+        number: 37050
+        protocol: HTTPS
+      tls:
+        mode: PASSTHROUGH
+    - hosts:
+        - '*.baas.twcc.ai'
+        - baas.twcc.ai
+      port:
+        name: https-request
+        number: 37051
+        protocol: HTTPS
+      tls:
+        mode: PASSTHROUGH
+    - hosts:
+        - '*.baas.twcc.ai'
+        - baas.twcc.ai
+      port:
+        name: https-chaincode
+        number: 37052
+        protocol: HTTPS
+      tls:
+        mode: PASSTHROUGH

@@ -1,0 +1,30 @@
+kind: Gateway
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - mariadb.asuscloud.io
+      port:
+        name: mariadb
+        number: 3306
+        protocol: HTTP
+    - hosts:
+        - mqtt.asuscloud.io
+      port:
+        name: mqtt
+        number: 1883
+        protocol: TCP
+    - hosts:
+        - "*.asuscloud.io"
+        - asuscloud.io
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: false

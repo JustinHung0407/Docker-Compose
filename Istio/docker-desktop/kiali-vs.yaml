@@ -15,3 +15,66 @@ spec:
             host: kiali.istio-system.svc.cluster.local
             port:
               number: 20001
+
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: kiali-vs
+  namespace: istio-system
+spec:
+  hosts:
+    - kiali.istio-system.svc.cluster.local
+    - kiali.omnistorpoc.com
+  gateways:
+    - istio-system/default
+  http:
+    - route:
+        - destination:
+            host: kiali.istio-system.svc.cluster.local
+            port:
+              number: 20001
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: istio
+  namespace: omnistor-trial
+spec:
+  controller: istio.io/ingress-controller
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: omnistor-trial
+spec:
+  ingressClassName: istio
+  rules:
+    - host: trial-application.omnistorpoc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: omnistortrial-svc
+              servicePort: 4200
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+  name: ingress
+  namespace: omnistor-trial
+spec:
+  rules:
+    - host: trial-application.omnistorpoc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: omnistortrial-svc
+              servicePort: 4200

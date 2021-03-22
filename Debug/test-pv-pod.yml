@@ -23,7 +23,31 @@ spec:
     - name: mypd
       persistentVolumeClaim:
         claimName: postgres
-
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  namespace: sonar
+spec:
+  containers:
+    - name: test-pv-pod
+      image: nginx
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - name: sonar-data
+          mountPath: /opt/sonarqube
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+  volumes:
+    - name: sonar-data
+      persistentVolumeClaim:
+        claimName: sonarqube
 ---
 kind: Pod
 apiVersion: v1
@@ -50,3 +74,28 @@ spec:
     - name: gitea-data
       persistentVolumeClaim:
         claimName: gitea-pvc
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  namespace: default
+spec:
+  containers:
+    - name: test-pv-pod
+      image: nginx
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - name: maria-data
+          mountPath: /data
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+  volumes:
+    - name: maria-data
+      persistentVolumeClaim:
+        claimName: data-omnithings-mariadb-master-0

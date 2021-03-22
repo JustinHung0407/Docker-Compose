@@ -15,27 +15,43 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
         * `git clone --single-branch --branch v1.5.3 https://github.com/vmware-tanzu/velero.git`
         * `cd velero`
     * Create file "credentials-velero"
-        * ```
+        * ``` bash
           echo "[default]
           aws_access_key_id = minio
           aws_secret_access_key = minio123" > credentials-velero
           ```
-          ```
+          ``` bash
           echo "[default]
           aws_access_key_id = 328LWHCFU51FNDE6989X
           aws_secret_access_key = 8zhxXUKyxAwDa7pNMZUNoXdO4JGIEtRWnZ5PKlfW" > credentials-velero-twcc
           ```
-          ```
+          ``` bash
           cos.twcc.ai
           echo "[default]
           aws_access_key_id = RD2AL8UEDZXLKTEW5ZFX
           aws_secret_access_key = uMa5gTCWvaZbtDelWoNlZhRGhzSalCxGAi0BrytF" > credentials-velero-twcc
           ```
+          ``` yaml
+          kind: Secret
+          apiVersion: v1
+          metadata:
+            name: cloud-credentials
+            namespace: velero
+          data:
+            cloud: |-
+               W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkPVJEMkFMOFVFRFpYTEtURVc1WkZYCmF3c19zZWNyZXRfYWNjZXNzX2tleT11TWE1Z1RDV3ZhWmJ0RGVsV29ObFpoUkdoelNhbEN4R0FpMEJyeXRG
+          type: Opaque
+          ```
+
+
     * Useing minio
       * `kubectl apply -f examples/minio/00-minio-deployment.yaml`
     * Istio Labeled
       * `kubectl create ns velero`
       * `kubectl label namespace velero istio-injection=enabled`
+    * Install Using Helm
+      * `helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts`
+      * `helm install vmware-tanzu/velero --namespace velero --create-namespace -f values.yaml --generate-name --set cleanUpCRDs=true`
     * Installation config  
         ```
         velero install \
@@ -106,6 +122,7 @@ Velero is a tool to back up and restore your Kubernetes cluster resources and pe
 
 
 velero backup create sonar-test-backup --include-namespaces sonar --wait
+
 velero restore create --from-backup sonar-test-backup --namespace-mappings sonar:sonar-test-backup --include-namespaces sonar
 
 
@@ -118,3 +135,23 @@ velero restore create --from-backup gitops-test-backup --namespace-mappings gito
   * `export AWS_SECRET_ACCESS_KEY="8zhxXUKyxAwDa7pNMZUNoXdO4JGIEtRWnZ5PKlfW"`
   * `export RESTIC_PASSWORD="I9n7G7G0ZpDWA3GOcJbIuwQCGvGUBkU5"`
   * `restic -r s3:cos.twcc.ai/temp-staging-backup/restic`
+
+
+## Test TWCC Production Deployment (with storage test)
+
+- `velero backup create test-storage-backup --include-namespaces test-storage --wait`
+- `kubectl delete ns test-storage`
+- `velero restore create --from-backup test-storage-backup --include-namespaces test-storage --exclude-resources pod -w`
+
+
+## Test TWCC Production StatefulSet
+
+- `helm repo add bitnami https://charts.bitnami.com/bitnami`
+- `helm install my-release bitnami/wordpress -n test-sts`
+- `velero backup create test-sts-backup --include-namespaces test-sts --wait`
+- `helm uninstall my-release -n test-sts`
+- `velero restore create --from-backup test-sts-backup --include-namespaces test-sts --exclude-resources pod -w`
+
+
+## Velero with Istio Problem
+1. istio sidecar inject twice: [https://github.com/istio/istio/issues/27675](https://github.com/istio/istio/issues/27675)
