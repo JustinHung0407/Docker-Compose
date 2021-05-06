@@ -10,11 +10,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: gitea-gitea
+      app: gitea-system-gitea
   endpoints:
     - path: /metrics
       port: http
-      protocol: TCP
       scheme: http
   namespaceSelector:
     matchNames:

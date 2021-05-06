@@ -67,5 +67,6 @@ Grafana dashboards
       * 新增 Cronjob 
         * `drone cron add "專案名稱" "Cronjob名稱" "排程" --branch "分支"`
         * example: `drone cron add "TWCC-BAAS/auto-testing-scripts" "gitops/k6/autotest/cron" @hourly --branch "gitops"`
+        * `drone cron add "TWCC-BAAS/auto-testing-scripts" "Baas-K6-autotest-3hr" '0 0 */3 * * *' --branch "master"`
       * 確認已新增 `drone cron ls TWCC-BAAS/auto-testing-scripts`
    3. 其他設定: [https://docs.drone.io/cron/](https://docs.drone.io/cron/)

@@ -1,4 +1,5 @@
 <!-- Test pod using alpine -->
+namespace=default
 kubectl run -it --rm --restart=Never alpine --image=alpine --namespace=$namespace sh
 
 kubectl exec -i -t -n $namespace $pod_name -c gitea "--" sh -c "clear; (bash || ash || sh)"
@@ -30,3 +31,14 @@ or
         "finalizers": []
     }
 ```
+
+
+<!-- Patch PVC -->
+kubectl patch pv/<PersistentVolume name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+
+
+* Remove current spec.claimRef values to change the PV's status from Released to Available.
+kubectl patch pv/<PersistentVolume name> --type json -p='[{"op": "remove", "path": "/spec/claimRef"}]' -n monitoring
+
+<!-- kubelet -->
+journalctl -u  kubelet -f 
