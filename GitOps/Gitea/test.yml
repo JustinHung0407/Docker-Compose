@@ -1,23 +1,8 @@
 kind: ServiceMonitor
 apiVersion: monitoring.coreos.com/v1
 metadata:
-  annotations:
-    meta.helm.sh/release-name: kube-prometheus
-    meta.helm.sh/release-namespace: prometheus
-  creationTimestamp: '2020-10-20T10:58:40Z'
-  generation: 1
-  labels:
-    app: kube-prometheus-stack-grafana
-    app.kubernetes.io/managed-by: Helm
-    chart: kube-prometheus-stack-10.1.0
-    heritage: Helm
-    release: kube-prometheus
   name: kube-prometheus-kube-prome-grafana
   namespace: prometheus
-  resourceVersion: '67563727'
-  selfLink: >-
-    /apis/monitoring.coreos.com/v1/namespaces/prometheus/servicemonitors/kube-prometheus-kube-prome-grafana
-  uid: 5b5e6cb8-07dc-45c4-b5af-0047cbf468dc
 spec:
   endpoints:
     - path: /metrics

@@ -1,0 +1,35 @@
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: k6-datasources
+  namespace: plg-operator-system
+spec:
+  datasources:
+    - name: Gitops
+      type: influxdb
+      url: "http://influxdb-svc.k6.svc.cluster.local/"
+      database: gitops
+      user: admin
+      secureJsonData:
+        password: $INFLUX_PASSWORD
+      access: proxy
+      editable: true
+      isDefault: false
+      jsonData:
+        httpMode: GET
+        timeInterval: 5s
+    - name: API-Gateway
+      type: influxdb
+      url: "http://influxdb-svc.k6.svc.cluster.local/"
+      database: apigw
+      user: admin
+      secureJsonData:
+        password: $INFLUX_PASSWORD
+      password: $INFLUX_PASSWORD
+      access: proxy
+      editable: true
+      isDefault: false
+      jsonData:
+        httpMode: GET
+        timeInterval: 5s
+  name: k6-datasources.yaml
