@@ -22,4 +22,4 @@ export default function () {
   });
 }
 
-// k6 run --out influxdb=https://admin:password@influxdb-658b6983.baas.tmpstg.twcc.tw/db script.js
+// k6 run --out influxdb=https://$(username):$(password)@$(influxdb-url)/$(db) script.js

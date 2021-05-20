@@ -25,31 +25,6 @@ change memory setting for Elasticsearch
     * `Open pgadmin4 and create database named "sonar"`
     * restart SonarQube
 
-Usage of Kubernetes yaml
------------------------
-* `kubectl apply -f K8s-deployment/local/xyz.yaml`
-* Order
-  1. postgres-secret
-  2. postgres-storage
-  3. postgres
-  4. sonarqube-storage
-  5. sonarqube
-* Accessing into PostgreSQL
-  * `psql -U admin postgres`
-  * list database `\l`
-  * connect to db `\c $dbname`
-  * list table `\dt`
-  * [psql commands](https://medium.com/@lianankuan/%E5%AD%B8%E7%BF%92postgresql-rails%E7%9A%84%E9%96%8B%E7%99%BC%E7%BF%92%E6%85%A3-262be0e26b99)
-  * Backup
-    * `pg_dump -U [user] [[dbname] > [name.backup.sql]`
-    * `pg_dump -U admin sonar > sonar.backup.sql`
-
-  * Copy from pod 
-    * `k cp sonar/postgres-7c5c68569c-h8pfr:/backup/sonar.backup.sql sonar.back.sql`
-  * Restore
-    * `psql -U [user] [dbname] < [name.backup.sql]`
-    * `psql -U admin sonar < sonar.backup.sql`
-
 Configuration
 -------------
 * Java Gradle Config
@@ -64,7 +39,7 @@ Configuration
     sonarqube {
         properties {
             property "sonar.projectName", "Java :: GitOps :: SonarQube Scanner for Gradle"
-            property 'sonar.host.url', 'https://sonarqube-416612ff.baas.tmpstg.twcc.tw/'
+            property 'sonar.host.url', 'https://sonarqube.localhost/'
             property "sonar.projectKey", "org.sonarqube:gitops-sonar-test"
             property "sonar.scm.disabled", "true"
             property "sonar.sourceEncoding", "UTF-8"

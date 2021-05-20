@@ -9,7 +9,7 @@ version: "3.5"
 services:
   postgres:
     container_name: postgres_container
-    image: postgres # postgres:9.6.19
+    image: postgres:9.6.19
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
@@ -24,7 +24,7 @@ services:
 
   pgadmin:
     container_name: pgadmin_container
-    image: dpage/pgadmin4 # dpage/pgadmin4:4.25
+    image: dpage/pgadmin4:4.25
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-test@gmail.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   sonarqube:
-    image: sonarqube:latest # 8.4.1-community
+    image: sonarqube:8.4.1-community
     container_name: sonarqube
     restart: "no"
     ports:
